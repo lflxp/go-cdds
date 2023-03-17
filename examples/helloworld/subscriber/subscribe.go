@@ -1,9 +1,9 @@
 package main
 
 /*
-#cgo CFLAGS: -I/usr/local/include/ddsc
-#cgo LDFLAGS: -lddsc ${SRCDIR}/../HelloWorldData.o
-#include "ddsc/dds.h"
+#cgo CFLAGS: -I ../../../library/include
+#cgo LDFLAGS: -L ../../../library/lib -lddsc ${SRCDIR}/HelloWorldData.o
+#include "dds/dds.h"
 #include "../HelloWorldData.h"
 */
 import "C"
@@ -15,7 +15,7 @@ import (
 	cdds "github.com/ami-GS/go-cdds"
 )
 
-const MAX_SAMPLES = 1
+const MAX_SAMPLES = 10000
 
 func main() {
 	var msg *C.HelloWorldData_Msg
@@ -66,8 +66,10 @@ func main() {
 		// WARN: Just using AllocRead() use much heap space
 		if samples == nil {
 			samples, num, err = reader.AllocRead(MAX_SAMPLES, MAX_SAMPLES, true)
+			fmt.Printf("nil sample num is %d\n", num)
 		} else {
 			num, err = reader.ReadWithBuff(samples, true)
+			fmt.Printf("sample num is %d\n", num)
 		}
 
 		if err != nil {
@@ -80,7 +82,8 @@ func main() {
 				fmt.Printf("Message %d:(%d, %s)\n", i, msg.userID, C.GoString(msg.message))
 				i++
 				if i >= num {
-					goto END
+					fmt.Printf("i %d num %d\n", i, num)
+					// goto END
 				}
 			} else {
 				break
@@ -88,6 +91,7 @@ func main() {
 
 		}
 		cdds.SleepFor(time.Millisecond * 20)
+		// cdds.SleepFor(time.Second * 20)
 	}
-END:
+	// END:
 }

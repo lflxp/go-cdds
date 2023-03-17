@@ -1,9 +1,9 @@
 package cdds
 
 /*
-#cgo CFLAGS: -I/usr/local/include/ddsc
-#cgo LDFLAGS: -lddsc
-#include "ddsc/dds.h"
+#cgo LDFLAGS: -L ${SRCDIR}/library/lib -lddsc
+#cgo CFLAGS: -I ${SRCDIR}/library/include
+#include "dds/dds.h"
 */
 import "C"
 import (
@@ -14,7 +14,7 @@ import (
 type QoS C.dds_qos_t
 
 func CreateQoS() *QoS {
-	return (*QoS)(C.dds_qos_create())
+	return (*QoS)(C.dds_create_qos())
 }
 
 func (qos *QoS) SetReliability(rel Reliability, n time.Duration) {
@@ -31,5 +31,5 @@ func (qos *QoS) SetPartition(num int, partitions *string) {
 }
 
 func (qos *QoS) delete() {
-	C.dds_qos_delete((*C.dds_qos_t)(qos))
+	C.dds_delete_qos((*C.dds_qos_t)(qos))
 }

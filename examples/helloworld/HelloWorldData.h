@@ -21,7 +21,7 @@
 #ifndef _DDSL_HELLOWORLDDATA_H_
 #define _DDSL_HELLOWORLDDATA_H_
 
-#include "ddsc/dds_public_impl.h"
+#include "dds/ddsc/dds_public_impl.h"
 
 
 

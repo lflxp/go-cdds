@@ -1,9 +1,9 @@
 package cdds
 
 /*
-#cgo CFLAGS: -I/usr/local/include/ddsc
-#cgo LDFLAGS: -lddsc
-#include "ddsc/dds.h"
+#cgo LDFLAGS: -L ${SRCDIR}/library/lib -lddsc
+#cgo CFLAGS: -I ${SRCDIR}/library/include
+#include "dds/dds.h"
 */
 import "C"
 import (
@@ -94,7 +94,7 @@ func (a *SampleAllocator) allocInfo(num uint32) unsafe.Pointer /*error*/ {
 	return allocked
 }
 
-//override
+// override
 func (a *SampleAllocator) AllocArray(num uint32) *Array {
 	a.mut.Lock()
 	defer a.mut.Unlock()
@@ -104,7 +104,7 @@ func (a *SampleAllocator) AllocArray(num uint32) *Array {
 	return NewArray(sampleHead, infosHead, num, a.elmSize)
 }
 
-//override
+// override
 func (a *SampleAllocator) Free(sampleHead unsafe.Pointer) /*error*/ {
 	a.mut.Lock()
 	defer a.mut.Unlock()
@@ -118,7 +118,7 @@ func (a *SampleAllocator) Free(sampleHead unsafe.Pointer) /*error*/ {
 	C.dds_free(infosHead)
 }
 
-//override
+// override
 func (a *SampleAllocator) AllFree() {
 	a.mut.Lock()
 	defer a.mut.Unlock()

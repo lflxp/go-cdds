@@ -1,9 +1,9 @@
 package main
 
 /*
-#cgo CFLAGS: -I/usr/local/include/ddsc
-#cgo LDFLAGS: -lddsc  ${SRCDIR}/../HelloWorldData.o
-#include "ddsc/dds.h"
+#cgo LDFLAGS: -L ../../../library/lib -lddsc ${SRCDIR}/HelloWorldData.o
+#cgo CFLAGS: -I ../../../library/include
+#include "dds/dds.h"
 #include "../HelloWorldData.h"
 */
 import "C"
@@ -33,6 +33,7 @@ func main() {
 		panic(err)
 	}
 	fmt.Println("=== [Publisher] Waiting for a reader to be discovered ...")
+	C.fflush(C.stdout)
 
 	// err = writer.SearchTopic(time.Millisecond * 20)
 	// if err != nil {
@@ -45,20 +46,27 @@ func main() {
 	}
 	var status cdds.CommunicationStatus
 	for status != cdds.PublicationMatched {
+		// for status > 0 && cdds.PublicationMatched > 0 {
 		status, err = writer.GetStatusChanges()
 		if err != nil {
 			panic(err)
 		}
+		// fmt.Println("status: rc", status)
 		cdds.SleepFor(time.Millisecond * 20)
 	}
 
-	msg.userID = 12343
+	for x := 0; x < 10000; x++ {
+		msg.userID = (C.int)(x)
 
-	jsonStr := "{\"Name\":\"cyclone\", \"Age\":22}"
+		jsonStr := "{\"Name\":\"cyclone\", \"Age\":22}"
 
-	msg.message = C.CString(jsonStr)
+		msg.message = C.CString(jsonStr)
+		// msg.message = (*C.char)(unsafe.Pointer(ms))
 
-	fmt.Println("=== [Publisher] Writing : ")
-	fmt.Printf("Message (%d, %s)\n", msg.userID, C.GoString(msg.message))
-	writer.Write(unsafe.Pointer(&msg))
+		fmt.Println("=== [Publisher] Writing : ")
+		fmt.Printf("Message (%d, %s)\n", msg.userID, C.GoString(msg.message))
+		cdds.SleepFor(time.Second)
+		writer.Write(unsafe.Pointer(&msg))
+	}
+
 }

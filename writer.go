@@ -1,9 +1,9 @@
 package cdds
 
 /*
-#cgo CFLAGS: -I/usr/local/include/ddsc
-#cgo LDFLAGS: -lddsc
-#include "ddsc/dds.h"
+#cgo LDFLAGS: -L ${SRCDIR}/library/lib -lddsc
+#cgo CFLAGS: -I ${SRCDIR}/library/include
+#include "dds/dds.h"
 */
 import "C"
 import (
@@ -18,7 +18,7 @@ type Writer struct {
 // Write is using current time implicitly
 func (w *Writer) Write(data unsafe.Pointer) error {
 	ret := C.dds_write(w.GetEntity(), data)
-	ErrorCheck(ret, C.DDS_CHECK_REPORT|C.DDS_CHECK_EXIT, "tmp where")
+	// ErrorCheck(ret, C.DDS_CHECK_REPORT|C.DDS_CHECK_EXIT, "tmp where")
 	if ret < 0 {
 		return CddsErrorType(ret)
 	}

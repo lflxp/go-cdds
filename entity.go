@@ -1,9 +1,9 @@
 package cdds
 
 /*
-#cgo CFLAGS: -I/usr/local/include/ddsc
-#cgo LDFLAGS: -lddsc
-#include "ddsc/dds.h"
+#cgo LDFLAGS: -L ${SRCDIR}/library/lib -lddsc
+#cgo CFLAGS: -I ${SRCDIR}/library/include
+#include "dds/dds.h"
 */
 import "C"
 
@@ -12,7 +12,7 @@ type EntityI interface {
 	IsInitialized() bool
 }
 
-//type Entity C.dds_entity_t
+// type Entity C.dds_entity_t
 type Entity struct {
 	ent C.dds_entity_t
 	qos *QoS //participantI and Topic and ? have qos
@@ -45,7 +45,7 @@ func (e Entity) GetStatusChanges() (CommunicationStatus, error) {
 }
 
 func (e *Entity) SetEnabledStatus(comStatusMask CommunicationStatus) error {
-	ret := C.dds_set_enabled_status(e.GetEntity(), C.uint32_t(comStatusMask))
+	ret := C.dds_set_status_mask(e.GetEntity(), C.uint32_t(comStatusMask))
 	if ret < 0 {
 		return CddsErrorType(ret)
 	}
