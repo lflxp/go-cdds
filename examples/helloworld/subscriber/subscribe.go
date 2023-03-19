@@ -15,7 +15,7 @@ import (
 	cdds "github.com/ami-GS/go-cdds"
 )
 
-const MAX_SAMPLES = 10000
+const MAX_SAMPLES = 1
 
 func main() {
 	var msg *C.HelloWorldData_Msg
@@ -83,15 +83,16 @@ func main() {
 				i++
 				if i >= num {
 					fmt.Printf("i %d num %d\n", i, num)
-					// goto END
+					goto END
 				}
 			} else {
 				break
 			}
 
 		}
-		cdds.SleepFor(time.Millisecond * 20)
-		// cdds.SleepFor(time.Second * 20)
+	END:
+		// cdds.SleepFor(time.Millisecond * 20)
+		cdds.SleepFor(time.Second)
 	}
 	// END:
 }
