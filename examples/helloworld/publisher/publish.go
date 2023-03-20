@@ -28,7 +28,10 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	writer, err := participant.CreateWriter("HelloWorldData_Msg", nil, nil)
+
+	qos := cdds.CreateQoS()
+	qos.SetReliability(cdds.Reliable, time.Microsecond*10)
+	writer, err := participant.CreateWriter("HelloWorldData_Msg", qos, nil)
 	if err != nil {
 		panic(err)
 	}

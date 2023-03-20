@@ -15,7 +15,7 @@ import (
 	cdds "github.com/ami-GS/go-cdds"
 )
 
-const MAX_SAMPLES = 1
+const MAX_SAMPLES = 3
 
 func main() {
 	var msg *C.HelloWorldData_Msg
@@ -65,7 +65,7 @@ func main() {
 	for {
 		// WARN: Just using AllocRead() use much heap space
 		if samples == nil {
-			samples, num, err = reader.AllocRead(MAX_SAMPLES, MAX_SAMPLES, true)
+			samples, num, err = reader.AllocRead(MAX_SAMPLES, MAX_SAMPLES, false)
 			fmt.Printf("nil sample num is %d\n", num)
 		} else {
 			num, err = reader.ReadWithBuff(samples, true)
@@ -91,8 +91,8 @@ func main() {
 
 		}
 	END:
-		// cdds.SleepFor(time.Millisecond * 20)
-		cdds.SleepFor(time.Second)
+		cdds.SleepFor(time.Millisecond * 500)
+		// cdds.SleepFor(time.Second)
 	}
 	// END:
 }
